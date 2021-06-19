@@ -302,7 +302,7 @@ inoremap <expr> <c-x><c-k> fzf#vim#complete#word({'left': '15%'})
 " -- vimtex ------------------------------------------------------------------
 
 let g:vimtex_view_method = 'skim'
-
+let g:tex_flavor = 'latex'
 " -- Tmuxline ----------------------------------------------------------------
 
 let g:tmuxline_theme = 'lightline'

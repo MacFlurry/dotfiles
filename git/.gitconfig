@@ -45,8 +45,12 @@
 	enabled = true
 
 [user]
-	name = Matthias Vallentin
-	email = matthias@vallentin.net
-	signingkey = 0x8BED5328EF21A389
+	name = MacFlurry
+	email = o.bk@me.com
+  signingkey = 469C2588B37D98A7
+
 [commit]
 	gpgsign = true
+
+[gpg]
+	program = /usr/local/bin/gpg

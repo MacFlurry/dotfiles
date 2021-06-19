@@ -123,11 +123,11 @@ zplug 'plugins/completion', from:oh-my-zsh
 zplug 'plugins/extract', from:oh-my-zsh
 zplug 'plugins/fancy-ctrl-z', from:oh-my-zsh
 zplug 'plugins/git', from:oh-my-zsh, if:'which git'
-#zplug 'plugins/gpg-agent', from:oh-my-zsh, if:'which gpg-agent'
-zplug 'plugins/httpie', from:oh-my-zsh, if:'which httpie'
+# zplug 'plugins/gpg-agent', from:oh-my-zsh, if:'which gpg-agent'
+# zplug 'plugins/httpie', from:oh-my-zsh, if:'which httpie'
 zplug 'plugins/nanoc', from:oh-my-zsh, if:'which nanoc'
 zplug 'plugins/nmap', from:oh-my-zsh, if:'which nmap'
-zplug 'plugins/tmux', from:oh-my-zsh, if:'which tmux'
+# zplug 'plugins/tmux', from:oh-my-zsh, if:'which tmux'
 
 #zplug 'b4b4r07/enhancd', use:init.sh
 zplug 'b4b4r07/zsh-vimode-visual', defer:3
@@ -135,7 +135,8 @@ zplug 'jeffreytse/zsh-vi-mode'
 zplug "junegunn/fzf-bin", as:command, from:gh-r, rename-to:"fzf", frozen:1
 zplug "junegunn/fzf", use:"shell/key-bindings.zsh"
 zplug 'knu/zsh-manydots-magic', use:manydots-magic, defer:3
-zplug 'romkatv/powerlevel10k', use:powerlevel10k.zsh-theme
+#zplug 'romkatv/powerlevel10k', use:powerlevel10k.zsh-theme
+zplug 'romkatv/powerlevel10k', as:theme, depth:1
 zplug 'seebi/dircolors-solarized', ignore:"*", as:plugin
 zplug 'Tarrasch/zsh-bd'
 zplug 'zsh-users/zsh-autosuggestions'

@@ -2,13 +2,7 @@
   excludesFile = ~/.config/git/ignore
 
 [alias]
-  prune = fetch --prune
-  cdiff = diff --cached
-  st = status --short
-  log1 = log --all --graph --decorate --oneline --abbrev-commit
-  glog = log --graph --pretty=format:'%Cred%h%Creset%C(yellow)%d%Creset %s %Cgreen(%cr) %C(cyan)<%an>%Creset'
   merge-branch = merge --log --no-commit --no-ff
-  push-this = push origin HEAD
   fix-submodules = submodule update --recursive --init
   recursive = "!sh -c 'for i in . `git submodule foreach -q --recursive pwd`; do cd $i && git $@; done' -"
   recursive-sh = "!sh -c 'for i in . `git submodule foreach -q --recursive pwd`; do cd $i && $@; done' -"
@@ -20,6 +14,9 @@
 	diff = auto
 	status = auto
 	branch = auto
+
+[commit]
+	gpgsign = true
 
 [diff]
   tool = icdiff
@@ -38,6 +35,9 @@
 [merge]
 	tool = vimdiff
 
+[pull]
+	rebase = true
+
 [push]
   followTags = true
 
@@ -45,12 +45,6 @@
 	enabled = true
 
 [user]
-	name = MacFlurry
-	email = o.bk@me.com
-  signingkey = 469C2588B37D98A7
-
-[commit]
-	gpgsign = true
-
-[gpg]
-	program = /usr/local/bin/gpg
+	name = Matthias Vallentin
+	email = matthias@vallentin.net
+	signingkey = 0x8BED5328EF21A389

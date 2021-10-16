@@ -89,9 +89,12 @@ brew "w3m"
 brew "watch"
 brew "wdiff"
 brew "wget"
+brew "yarn"
 brew "youtube-dl"
 brew "zeek"
 brew "zsh"
 
 mas "keynote", id: 409183694
+mas "pages", id: 409201541
+mas "numbers", id: 409203825
 mas "wireguard", id: 1451685025

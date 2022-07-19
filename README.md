@@ -1,56 +1,29 @@
-<p align="center">
-  <img width="600" alt="zsh" src="https://user-images.githubusercontent.com/53797/46028848-ee273b80-c0f1-11e8-9e32-a750cd84692b.png">
-</p>
+# dotfiles
 
-Proper dotfiles are the very heart of an efficient working environment.
+> Proper dotfiles are the very heart of an efficient working environment.
 
-This repository ships a set of configuration files for modern command line
-tools, such as [tmux][tmux], [vim][vim], and [zsh][zsh]. Additionally, it
-provides a portable script for managing dotfiles and quickly getting up and
-runninng on a new machine.
+- **Terminals**: [Kitty](https://sw.kovidgoyal.net/kitty/) and
+             [tmux](https://github.com/tmux/tmux)
+- **Shell**: [Fish](https://fishshell.com/)
+- **Editor**: [NeoVim](https://neovim.io/)
+- **Colorscheme**: [Kanagawa](https://github.com/rebelot/kanagawa.nvim)
+- **Font**: [Fira Code](https://github.com/tonsky/FiraCode) from [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts)
 
-Usage
-=====
+On macOS, [Homebrew](https://brew.sh) is the package manager.
 
-Synopsis
---------
+## Usage
 
-These are the quick start instructions to get up and running:
+### Synopsis
 
-    git clone git@github.com:mavam/dotfiles.git ~/.dotfiles
-    cd .dotfiles
-    ./bootstrap dotfiles
-
-Make zsh your login shell, install Vim plugins and
-[vim-anywhere](https://github.com/cknadler/vim-anywhere), and setup tmux
-plugins:
-
-    ./bootstrap zsh vim tmux
-
-On a Mac, you may also consider improving the system experience and installing
-[Homebrew][homebrew]:
-
-    ./bootstrap system homebrew
-
-I use [iTerm2](https://iterm2.com) as terminal emulator. Add the light and dark
-[gruvbox](https://github.com/morhetz/gruvbox-contrib) by loading [my
-settings](iterm2/.iterm2/com.googlecode.iterm2.plist) via *Settings* ->
-*General* -> *Browse*. This requires the
-[Meslo](https://github.com/andreberg/Meslo-Font) from [Nerd
-Fonts](https://github.com/ryanoasis/nerd-fonts) to be installed, which is
-readily available [via
-Homebrew](https://github.com/ryanoasis/nerd-fonts#option-4-homebrew-fonts).
-
-Local Setup
------------
-
-Begin with cloning this repository somewhere:
+Clone this repository and bootstrap your system:
 
     git clone git@github.com:mavam/dotfiles.git ~/.dotfiles
     cd .dotfiles
+    ./bootstrap
 
-Dotfile Management
-------------------
+The bootstrap script will ask you whether you'd like to setup specific components.
+
+### Dotfile Management
 
 The POSIX shell script [dots](dots) installs (= symlinks) and removes subsets
 of dotfiles according to your needs. For example, install all dotfiles as
@@ -58,9 +31,10 @@ follows:
 
     ./dots install -a
 
-Alternatively, install only dotfiles for vim and zsh:
+Alternatively, install only dotfiles selectively, with positional arguments
+matching names in this repository:
 
-    ./dots install vim zsh
+    ./dots install git gnupg
 
 Similarly, remove all installed dotfiles:
 
@@ -72,55 +46,17 @@ of the dotfiles would look like, it is possible to look at the diff first:
 
     ./dots diff -a
 
-System Bootstrapping
---------------------
+To add a configuration for an exemplary tool "foo", create a new directory
+`foo` and add the dotfiles in there, as if `foo` is your install prefix
+(typically `$HOME`). You can "scope" a tool as *local* by adding a tag-file
+`foo/LOCAL`. This has the effect of creating a nested configuration directory
+in your prefix, instead of symlinking the directory. For example, you may not
+want to symlink `~/.gnupg` but only the contained file `~/.gnupg/gpg.conf`.
+Without the scope tag `gnupg/LOCAL`, you would end up with:
 
-In addition to managing dotfiles, the script [bootstrap](bootstrap) facilitates
-getting up and running on a new machine. Passing `-h` shows the available
-aspects available for configuration:
+    ~/.gnupg -> dotfiles/gpg/.gnupg
 
-1. `system`: adjust system defaults for productivity
-1. `homebrew`:setup [Homebrew][homebrew] and install bundled packages
-1. `dotfiles`: setup dotfiles via `./dots install -a`
-1. `postfix`: setup [postfix][postfix] as GMail relay
-1. `tmux`: install [tmux][tmux] plugins
-1. `vim`: install [vim][vim] plugins
-1. `zsh`: setup [zsh][zsh] as login shell
+as opposed to:
 
-Invoking
-
-    ./bootstrap
-
-without any arguments sets up all aspects in the above order. On macOS, (1)
-includes:
-
-1. Adjust various default settings, e.g.:
-   - Improve security and privacy settings
-   - Disable boot sound
-   - Reduce UI effects for improved speed
-   - Make the keyboard faster
-2. Perform a software update
-3. Install XCode
-
-Extras
-======
-
-Browser
--------
-
-My browser is Safari, which I beef up with the following enhancements:
-
-- [sVim](https://github.com/flipxfx/sVim) ([example config][svim-config])
-- [Adguard](https://adguard.com/en/article/adblock-adguard-safari.html)
-- [Disconnect](https://disconnect.me)
-
-Browse through this [curated list of extensions][safari-extensions] for further
-inspiration.
-
-[homebrew]: https://brew.sh
-[postfix]: http://www.postfix.org
-[tmux]: https://github.com/tmux/tmux
-[vim]: http://www.vim.org
-[zsh]: http://www.zsh.org
-[svim-config]: https://gist.github.com/nikitavoloboev/c26e6a05e4e426e0542e55b7513b581c
-[safari-extensions]: https://github.com/learn-anything/safari-extensions
+    ~/.gnupg (local directory)
+    ~/.gnupg/gpg.conf -> dotfiles/gpg/.gnupg/gpg.conf

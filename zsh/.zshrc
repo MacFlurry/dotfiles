@@ -358,3 +358,14 @@ fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/omega.bavedila/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/omega.bavedila/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/omega.bavedila/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/omega.bavedila/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+test -e /Users/omega.bavedila/.iterm2_shell_integration.zsh && source /Users/omega.bavedila/.iterm2_shell_integration.zsh || true
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="/Users/omega.bavedila/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)

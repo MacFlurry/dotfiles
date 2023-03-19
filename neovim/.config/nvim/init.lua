@@ -1,12 +1,14 @@
 -- Appearance.
-vim.o.laststatus = 3 -- Global statusline.
+vim.o.laststatus = 3 -- Global statusline
 vim.wo.signcolumn = 'number' -- Gutter on the left
 
 -- Generic UX.
-vim.o.mouse = 'a' -- Enable mouse mode.
-vim.o.clipboard = 'unnamedplus' -- Use system pastebuffer.
-vim.o.inccommand = 'nosplit' -- Incremental live completion.
-vim.o.completeopt = 'menuone,noinsert' -- Consistent completion prompting.
+vim.o.background = 'dark' -- Colorscheme
+vim.o.clipboard = 'unnamedplus' -- Use system pastebuffer
+vim.o.completeopt = 'menuone,noinsert' -- Consistent completion prompting
+vim.o.inccommand = 'nosplit' -- Incremental live completion
+vim.o.mouse = 'a' -- Enable mouse mode
+vim.o.termguicolors = true -- Enables 24-bit RGB colors in TUI
 
 -- Search UX.
 vim.o.hlsearch = true -- Set highlight on search.
@@ -87,286 +89,39 @@ custom_on_attach = function(client, bufnr)
   local opts = function(hint)
     return { buffer = bufnr, silent = true, desc = hint }
   end
+  -- Buffer keymaps.
+  vim.api.nvim_buf_set_option(bufnr, 'tagfunc', 'v:lua.vim.lsp.tagfunc')
+  vim.api.nvim_buf_set_option(bufnr, 'formatexpr', 'v:lua.vim.lsp.formatexpr()')
   -- Capability-based keymaps.
-  if client.server_capabilities.declarationProvider then
-    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts("Go to declaration"))
-  end
-  if client.server_capabilities.definitionProvider then
-    vim.api.nvim_buf_set_option(bufnr, 'tagfunc', 'v:lua.vim.lsp.tagfunc')
-    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts("Go to definition"))
-  end
-  if client.server_capabilities.typeDefinitionProvider then
-    vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts("Go to type definition"))
-  end
-  if client.server_capabilities.hoverProvider then
-    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts("LSP hover"))
-  end
-  if client.server_capabilities.implementationProvider then
-    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts("Go to implementation"))
-  end
-  if client.server_capabilities.signatureHelpProvider then
-    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts("Show signature help"))
-  end
-  if client.server_capabilities.referencesProvider then
-    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts("Go to references"))
-  end
-  if client.server_capabilities.documentFormattingProvider then
-    vim.keymap.set('n', '<leader>f', vim.lsp.buf.format, opts("Format buffer"))
-  end
-  if client.server_capabilities.documentRangeFormattingProvider then
-    vim.api.nvim_buf_set_option(bufnr, 'formatexpr', 'v:lua.vim.lsp.formatexpr()')
-    vim.keymap.set('v', '<leader>f', vim.lsp.buf.range_formatting, opts("Format range"))
-  end
+  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts("Go to declaration"))
+  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts("Go to definition"))
+  vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts("Go to type definition"))
+  vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts("LSP hover"))
+  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts("Go to implementation"))
+  vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts("Show signature help"))
+  vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts("Go to references"))
+  vim.keymap.set('n', '<leader>f', vim.lsp.buf.format, opts("Format buffer"))
+  vim.keymap.set('v', '<leader>f', vim.lsp.buf.format, opts("Format selection"))
   -- Universal keymaps.
   vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, opts("Show diagnostics"))
   vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts("Go to previous diagnostic"))
   vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts("Go to next diagnostic"))
   vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, opts("Perform code action"))
-  vim.keymap.set('v', '<leader>ca', vim.lsp.buf.range_code_action, opts("Perform code action"))
+  vim.keymap.set('v', '<leader>ca', vim.lsp.buf.code_action, opts("Perform code action"))
 end
 
-return require('packer').startup(function(use)
-  -- Package manager.
-  use 'wbthomason/packer.nvim'
+-- Bootstrap Lazy
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
 
-  -- Enable repeating supporting plugin maps with `.`.
-  use 'tpope/vim-repeat'
-
-  -- Heuristically set buffer options.
-  use 'tpope/vim-sleuth'
-
-  -- Git integration
-  use 'tpope/vim-fugitive'
-
-  -- Facilitate whitespace management
-  use 'ntpeters/vim-better-whitespace'
-
-  -- Automatic dark mode switching on macOS.
-  use {
-    'f-person/auto-dark-mode.nvim',
-    config = function()
-      local auto_dark_mode = require('auto-dark-mode')
-      auto_dark_mode.setup{
-        update_interval = 3000,
-        set_dark_mode = function()
-          vim.api.nvim_set_option('background', 'dark')
-        end,
-        set_light_mode = function()
-          vim.api.nvim_set_option('background', 'light')
-        end,
-      }
-      auto_dark_mode.init()
-    end,
-  }
-
-  -- UI to select things (files, grep results, open buffers...)
-  use {
-    'nvim-telescope/telescope.nvim',
-    requires = {
-      'nvim-lua/popup.nvim',
-      'nvim-lua/plenary.nvim'
-    },
-    config = function()
-      require('telescope').setup {
-        defaults = {
-          mappings = {
-            i = {
-              ['<C-u>'] = false,
-              ['<C-d>'] = false,
-            },
-          },
-        },
-      }
-      local opts = { silent = true }
-      vim.keymap.set('n', '<Tab>', function() require('telescope.builtin').buffers({sort_lastused = true, require('telescope.themes').get_ivy({})}) end, opts)
-      vim.keymap.set('n', '<S-Tab>', function() require('telescope.builtin').git_files(require('telescope.themes').get_ivy({})) end, opts)
-      vim.keymap.set('n', '<leader>sf', function() require('telescope.builtin').find_files({previewer = false}) end, opts)
-      vim.keymap.set('n', '<leader>sb', function() require('telescope.builtin').current_buffer_fuzzy_find() end, opts)
-      vim.keymap.set('n', '<leader>sh', function() require('telescope.builtin').help_tags() end, opts)
-      vim.keymap.set('n', '<leader>st', function() require('telescope.builtin').tags() end, opts)
-      vim.keymap.set('n', '<leader>sd', function() require('telescope.builtin').grep_string() end, opts)
-      vim.keymap.set('n', '<leader>sp', function() require('telescope.builtin').live_grep() end, opts)
-      vim.keymap.set('n', '<leader>so', function() require('telescope.builtin').tags{ only_current_buffer = true } end, opts)
-      vim.keymap.set('n', '<leader>?', function() require('telescope.builtin').oldfiles() end, opts)
-    end
-  }
-
-  -- TreeSitter integration, and additional textobjects for it.
-  use {
-    'nvim-treesitter/nvim-treesitter',
-    run = ':TSUpdate', -- recommended by nvim-bqf
-    config = function()
-      require'nvim-treesitter.configs'.setup {
-        ensure_installed = {
-          'bash';
-          'c';
-          'comment';
-          'cpp';
-          'fish';
-          'json';
-          'lua';
-          'markdown';
-          'python';
-          'yaml';
-        },
-        highlight = {
-          enable = true,
-          additional_vim_regex_highlighting = true,
-        },
-        incremental_selection = {
-          enable = true,
-          keymaps = {
-            init_selection = '<CR>',
-            scope_incremental = '<CR>',
-            node_incremental = '<TAB>',
-            node_decremental = '<S-TAB>',
-          },
-        },
-      }
-    end
-  }
-
-  -- Syntax aware text-objects, select, move, swap, and peek support.
-  use {
-    'nvim-treesitter/nvim-treesitter-textobjects',
-    requires = 'nvim-treesitter/nvim-treesitter'
-  }
-
-  -- Better QuickFix
-  use 'kevinhwang91/nvim-bqf'
-
-  -- Make working with a filesystem tree a breeze.
-  use {
-    'kyazdani42/nvim-tree.lua',
-    requires = 'kyazdani42/nvim-web-devicons',
-    config = function()
-      require'nvim-tree'.setup {
-      }
-      -- mnemonic: 't' for filesystem 'T'ree
-      vim.keymap.set('n', '<leader>t', ':NvimTreeToggle<Cr>', { silent = true })
-    end
-  }
-
-  -- Add git related info in the signs columns and popups
-  use {
-    'lewis6991/gitsigns.nvim',
-    requires = {
-      'nvim-lua/plenary.nvim'
-    },
-    config = function()
-      require'gitsigns'.setup {
-        current_line_blame = true
-      }
-    end
-  }
-
-  -- Display a character as the virtual column.
-  use {
-    'lukas-reineke/virt-column.nvim',
-    config = function()
-      require('virt-column').setup()
-    end,
-  }
-
-  -- Colorscheme.
-  use {
-    'rebelot/kanagawa.nvim',
-    config = function()
-      require('kanagawa').setup({
-        transparent = true, -- do not set background color
-      })
-      vim.o.termguicolors = true
-      -- vim.cmd 'highlight WinSeparator NONE'
-      vim.cmd 'colorscheme kanagawa'
-    end
-  }
-
-  -- Language server configurations.
-  use {
-    'neovim/nvim-lspconfig',
-    config = function()
-      -- C & C++
-      require('lspconfig').clangd.setup {
-        init_options = {
-          clangdFileStatus = true
-        },
-        on_attach = custom_on_attach
-      }
-      -- Python
-      require('lspconfig').pyright.setup {
-        on_attach = custom_on_attach,
-        on_init = function(client)
-            client.config.settings.python.pythonPath = get_python_path(client.config.root_dir)
-        end
-      }
-      -- R
-      require('lspconfig').r_language_server.setup {
-        on_attach = custom_on_attach
-      }
-    end
-  }
-
-  -- Expand LSP experience to non-LSP-grade linters.
-  use {
-    "jose-elias-alvarez/null-ls.nvim",
-    config = function()
-      require("null-ls").setup({
-        sources = {
-          require("null-ls").builtins.formatting.stylua,
-          require("null-ls").builtins.diagnostics.markdownlint,
-          require("null-ls").builtins.diagnostics.shellcheck,
-          require("null-ls").builtins.diagnostics.vale,
-        },
-        on_attach = custom_on_attach
-      })
-    end
-  }
-
-  -- Incremental renaming while cursor is on LSP identifier.
-  use {
-    "smjonas/inc-rename.nvim",
-    config = function()
-      require("inc_rename").setup()
-      vim.keymap.set("n", "<leader>r", ":IncRename ")
-    end,
-  }
-
-  -- A neat status line.
-  use {
-    'nvim-lualine/lualine.nvim',
-    requires = { 'kyazdani42/nvim-web-devicons', opt = true },
-    config = function()
-      require('lualine').setup()
-    end
-  }
-
-  -- LaTeX integration.
-  use {
-    'lervag/vimtex',
-    config = function()
-      vim.g.tex_flavor = 'latex'
-      -- Use Skim on macOS. This requires the following Sync settings:
-      --   Preset: Custom
-      --   Command: nvim
-      --   Arguments: --headless -c "VimtexInverseSearch %line '%file'"
-      vim.g.vimtex_view_method = 'skim'
-      vim.g.vimtex_view_skim_sync = 1
-      vim.g.vimtex_view_skim_activate = 1
-    end
-  }
-
-  -- R integration.
-  use {
-    'jalvesaq/Nvim-R',
-    branch = 'master',
-    config = function()
-      vim.g.R_assign = 0
-    end
-  }
-
-  -- Automatically set up your configuration after cloning packer.nvim
-  -- Put this at the end after all plugins
-  if packer_bootstrap then
-    require('packer').sync()
-  end
-end)
+require('lazy').setup('plugins')

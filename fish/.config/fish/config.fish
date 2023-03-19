@@ -42,12 +42,14 @@ if command -sq brew
   set -x HOMEBREW_AUTO_UPDATE_SECS 604800 # 1 week
   # Latest LLVM compiler
   set -l llvm_prefix (brew --prefix llvm)
-  set -x CC $llvm_prefix/bin/clang
-  set -x CXX $llvm_prefix/bin/clang++
-  set -px CPPFLAGS -isystem $llvm_prefix/include
-  set -px CXXFLAGS -isystem $llvm_prefix/include/c++/v1
-  set -px LDFLAGS -Wl,-rpath,$llvm_prefix
-  fish_add_path -g $llvm_prefix
+  if test -d $llvm_prefix
+    set -x CC $llvm_prefix/bin/clang
+    set -x CXX $llvm_prefix/bin/clang++
+    set -px CPPFLAGS -isystem $llvm_prefix/include
+    set -px CXXFLAGS -isystem $llvm_prefix/include/c++/v1
+    set -px LDFLAGS -Wl,-rpath,$llvm_prefix
+    fish_add_path -g $llvm_prefix
+  end
 end
 
 # CMake
@@ -59,7 +61,15 @@ set -x CMAKE_CXX_COMPILER_LAUNCHER ccache
 set -x DOCKER_BUILDKIT 1
 
 # FZF tuning
+#
+# Light mode still to be integrated:
+#--color=bg+:#ccd0da,bg:#eff1f5,spinner:#dc8a78,hl:#d20f39 \
+#--color=fg:#4c4f69,header:#d20f39,info:#8839ef,pointer:#dc8a78 \
+#--color=marker:#dc8a78,fg+:#4c4f69,prompt:#8839ef,hl+:#d20f39"
 set -x FZF_DEFAULT_OPTS \
+  --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
+  --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
+  --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
   --bind=ctrl-k:up,ctrl-j:down,ctrl-h:page-up,ctrl-l:page-down \
   --bind=ctrl-p:half-page-up,ctrl-n:half-page-down \
   --bind=ctrl-e:preview-down,ctrl-y:preview-up \
@@ -90,6 +100,7 @@ if status is-interactive
 
   # Setup prompt
   starship init fish | source
+  enable_transience
 
   # Launch gpg-agent for use by SSH.
   set -x GPG_TTY (tty)
